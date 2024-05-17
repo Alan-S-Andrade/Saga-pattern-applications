@@ -20,4 +20,5 @@ Example execution input:
 ```
 
 Transaction state machine:
+
 ![stepfunctions_graph](https://github.com/Alan-S-Andrade/travelReservation/assets/46075052/7d7a8fb8-9b0e-45a1-9da2-fa5172faec32)
