@@ -169,6 +169,11 @@ resource "aws_iam_role_policy_attachment" "cancel_hotel_lambda_dynamo_db_delete"
   policy_arn = module.hotel_iam_policies.dynamo_db_delete
 }
 
+resource "aws_iam_role_policy_attachment" "cancel_hotel_lambda_dynamo_db_update" {
+  role       = module.cancel_hotel_lambda.function_role_name
+  policy_arn = module.hotel_iam_policies.dynamo_db_update
+}
+
 # Cancel Flight Function
 module "cancel_flight_lambda" {
   source         = "./modules/lambda"
@@ -187,6 +192,11 @@ resource "aws_iam_role_policy_attachment" "cancel_flight_lambda_dynamo_db_delete
 resource "aws_iam_role_policy_attachment" "cancel_flight_lambda_dynamo_db_write" {
   role       = module.cancel_flight_lambda.function_role_name
   policy_arn = module.flight_iam_policies.dynamo_db_write
+}
+
+resource "aws_iam_role_policy_attachment" "cancel_flight_lambda_dynamo_db_update" {
+  role       = module.cancel_flight_lambda.function_role_name
+  policy_arn = module.flight_iam_policies.dynamo_db_update
 }
 
 # Step Function
