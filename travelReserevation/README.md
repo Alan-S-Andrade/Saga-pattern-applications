@@ -1,4 +1,4 @@
-## AWS Step Functions travel reservation transaction
+## AWS Step Functions travel reservation pattern
 
 1. Edit ```profile.tf``` to add your AWS access and secret keys
 2. Run:
