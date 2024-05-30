@@ -1,0 +1,179 @@
+{
+    "Comment": "Start",
+    "StartAt": "Login",
+    "States": {
+      "Login": {
+        "Type": "Task",
+        "Resource": "${LOGIN_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 1.5
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "LoginError"
+            ],
+            "ResultPath": "$.error-info",
+            "Next": "Fail"
+          }
+        ],
+        "Next": "CheckItemId"
+      },
+      "CheckItemId": {
+        "Type": "Task",
+        "Resource": "${CHECK_ITEM_ID_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 1.5
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "CheckItemIdError"
+            ],
+            "ResultPath": "$.error-info",
+            "Next": "Fail"
+          }
+        ],
+        "Next": "GetItemId"
+      },
+      "GetItemId": {
+        "Type": "Task",
+        "Resource": "${GET_ITEM_ID_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 1.5
+          }
+        ],
+        "Next": "GetCloseRg"
+      },
+      "GetCloseRg": {
+        "Type": "Task",
+        "Resource": "${GET_CLOSE_RG_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "ResultPath": "$.getCloseRgResult",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 1.5
+          }
+        ],
+        "Next": "GetCloseRgChoice"
+      },
+      "GetCloseRgChoice": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.getCloseRgResult.closestRegion",
+            "StringEquals": "us-east-1",
+            "Next": "RegionEast"
+          },
+          {
+            "Variable": "$.getCloseRgResult.closestRegion",
+            "StringEquals": "us-west-1",
+            "Next": "RegionWest"
+          }
+        ],
+        "Default": "RegionEast"
+      },
+      "RegionEast": {
+        "Type": "Task",
+        "Resource": "${REGION_EAST_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "Next": "CheckAvailability"
+      },
+      "RegionWest": {
+        "Type": "Task",
+        "Resource": "${REGION_WEST_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "Next": "CheckAvailability"
+      },
+      "CheckAvailability": {
+        "Type": "Task",
+        "Resource": "${CHECK_AVAILABILITY_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "Next": "ReserveItem",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "CheckAvailabilityError"
+            ],
+            "ResultPath": "$.error-info",
+            "Next": "Fail"
+          }
+        ]
+      },
+      "ReserveItem": {
+        "Type": "Task",
+        "Resource": "${RESERVE_ITEM_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "Next": "CheckMoney"
+      },
+      "CheckMoney": {
+        "Type": "Task",
+        "Resource": "${CHECK_MONEY_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "CheckMoneyError"
+            ],
+            "ResultPath": "$.error-info",
+            "Next": "ReturnItem"
+          }
+        ],
+        "Next": "Pay"
+      },
+      "ReturnItem": {
+        "Type": "Task",
+        "Resource": "${RETURN_ITEM_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "Next": "Fail"
+      },
+      "Pay": {
+        "Type": "Task",
+        "Resource": "${PAY_FUNCTION_ARN}",
+        "TimeoutSeconds": 10,
+        "Next": "Receipt"
+      },
+      "Fail": {
+        "Type": "Fail"
+      },
+      "Receipt": {
+        "Type": "Succeed"
+      }
+    }
+  }
