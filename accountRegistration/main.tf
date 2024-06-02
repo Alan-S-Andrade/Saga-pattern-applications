@@ -138,7 +138,7 @@ data "local_file" "asl_definition" {
 }
 
 resource "aws_sfn_state_machine" "account_registration" {
-  name     = "AccountRegistrationStateMachine"
+  name     = "Account_Registration"
   role_arn = aws_iam_role.lambda_execution_role.arn
 
   definition = data.local_file.asl_definition.content
