@@ -1,0 +1,123 @@
+{
+  "Comment": "Account Registration and Setup",
+  "StartAt": "CreateUserAccount",
+  "States": {
+    "CreateUserAccount": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:CreateUserAccount",
+      "Catch": [
+        {
+          "ErrorEquals": ["CreateUserAccountError"],
+          "ResultPath": "$.error-info",
+          "Next": "AccountSetupFailed"
+        }
+      ],
+      "Next": "SendVerificationEmail"
+    },
+    "SendVerificationEmail": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:SendVerificationEmail",
+      "Catch": [
+        {
+          "ErrorEquals": ["SendVerificationEmailError"],
+          "ResultPath": "$.error-info",
+          "Next": "DeleteUserAccount"
+        }
+      ],
+      "Next": "VerifyEmail"
+    },
+    "VerifyEmail": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:VerifyEmail",
+      "Catch": [
+        {
+          "ErrorEquals": ["VerifyEmailError"],
+          "ResultPath": "$.error-info",
+          "Next": "DeleteUserAccount"
+        }
+      ],
+      "Next": "CreateUserProfile"
+    },
+    "CreateUserProfile": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:CreateUserProfile",
+      "Catch": [
+        {
+          "ErrorEquals": ["CreateUserProfileError"],
+          "ResultPath": "$.error-info",
+          "Next": "DeleteUserAccount"
+        }
+      ],
+      "Next": "SendWelcomeEmail"
+    },
+    "SendWelcomeEmail": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:SendWelcomeEmail",
+      "Catch": [
+        {
+          "ErrorEquals": ["SendWelcomeEmailError"],
+          "ResultPath": "$.error-info",
+          "Next": "DeleteUserProfile"
+        }
+      ],
+      "Next": "ProvisionResources"
+    },
+    "ProvisionResources": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:ProvisionResources",
+      "Catch": [
+        {
+          "ErrorEquals": ["ProvisionResourcesError"],
+          "ResultPath": "$.error-info",
+          "Next": "RevokeResources"
+        }
+      ],
+      "Next": "SetupInitialConfigurations"
+    },
+    "SetupInitialConfigurations": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:SetupInitialConfigurations",
+      "Catch": [
+        {
+          "ErrorEquals": ["SetupInitialConfigurationsError"],
+          "ResultPath": "$.error-info",
+          "Next": "RevokeResources"
+        }
+      ],
+      "Next": "NotifyAdmin"
+    },
+    "NotifyAdmin": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:NotifyAdmin",
+      "Catch": [
+        {
+          "ErrorEquals": ["NotifyAdminError"],
+          "ResultPath": "$.error-info",
+          "Next": "AccountSetupFailed"
+        }
+      ],
+      "Next": "AccountSetupSucceeded"
+    },
+    "DeleteUserAccount": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:DeleteUserAccount",
+      "Next": "AccountSetupFailed"
+    },
+    "RevokeResources": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:RevokeResources",
+      "Next": "DeleteUserAccount"
+    },
+    "DeleteUserProfile": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:DeleteUserProfile",
+      "Next": "DeleteUserAccount"
+    },
+    "AccountSetupSucceeded": {
+      "Type": "Succeed"
+    },
+    "AccountSetupFailed": {
+      "Type": "Fail"
+    }
+  }
+}
