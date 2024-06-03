@@ -28,5 +28,4 @@ Example execution input:
 
 Transaction state machine:
 
-![stepfunctions_graph] 
 <img width="620" alt="Screen Shot 2024-06-03 at 10 34 26 AM" src="https://github.com/Alan-S-Andrade/Saga-pattern-applications/assets/46075052/fe02a67a-81cd-4777-8694-42065b383185">
