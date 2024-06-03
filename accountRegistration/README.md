@@ -6,15 +6,17 @@
 $ terraform init
 $ terraform apply -auto-approve
 ```
+3. Add an Amazon SES verified email to the execution input. Follow these steps:
+https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html
 
 Example execution input:
 ```json
 {
-  "userId": "carlosg",
-  "email": "carlosg@example.com",
+  "userId": "alansa2",
+  "email": "alansa2@example.com",
   "profileData": {
-    "firstName": "Carlos",
-    "lastName": "Gomez",
+    "firstName": "Alan",
+    "lastName": "Andrade",
     "address": "1105 W Main St, Urbana, IL"
   },
   "initialConfigurations": {
