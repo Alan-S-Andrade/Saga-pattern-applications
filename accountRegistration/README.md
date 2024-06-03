@@ -28,4 +28,5 @@ Example execution input:
 
 Transaction state machine:
 
-![stepfunctions_graph](https://github.com/Alan-S-Andrade/travelReservation/assets/46075052/7d7a8fb8-9b0e-45a1-9da2-fa5172faec32)
+![stepfunctions_graph] 
+<img width="620" alt="Screen Shot 2024-06-03 at 10 34 26 AM" src="https://github.com/Alan-S-Andrade/Saga-pattern-applications/assets/46075052/fe02a67a-81cd-4777-8694-42065b383185">
