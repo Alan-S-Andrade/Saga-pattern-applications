@@ -12,12 +12,15 @@ https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html
 Example execution input:
 ```json
 {
-  "userId": "alansa2",
-  "email": "alansa2@example.com",
-  "profileData": {
+  "user_id": "alansa2",
+  "email": "alansa2@illinois.edu",
+  "user_data": {
     "firstName": "Alan",
     "lastName": "Andrade",
     "address": "1105 W Main St, Urbana, IL"
+  },
+  "profile_data": {
+    "hometown": "Bogotá"
   },
   "initialConfigurations": {
     "notifications": "off",
